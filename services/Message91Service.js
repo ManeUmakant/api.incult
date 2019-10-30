@@ -2,12 +2,12 @@
 const config = require('../config/config');
 const axios = require('axios');
 
-class Message99Service {
+class Message91Service {
 
     async sendOtp(){
         try{
-            const { message99Service } = config;
-            const url = `${message99Service.serviceUrl}/otp?sender=${message99Service.sender}&mobile=${this.number}&authkey=${message99Service.authKey}`;
+            const { message91Service } = config;
+            const url = `${message91Service.serviceUrl}/otp?sender=${message91Service.sender}&mobile=${this.number}&authkey=${message91Service.authKey}`;
             let result = await axios.post(url);
             const { data } = result;
             this.otpResult = data.type === 'success';
@@ -21,8 +21,8 @@ class Message99Service {
     async validateOtp(){
 
         try{
-            const { message99Service } = config;
-            const url = `${message99Service.serviceUrl}/otp/verify?otp=${this.otp}&mobile=${this.number}&authkey=${message99Service.authKey}`;
+            const { message91Service } = config;
+            const url = `${message91Service.serviceUrl}/otp/verify?otp=${this.otp}&mobile=${this.number}&authkey=${message91Service.authKey}`;
             let result = await axios.post(url);
             const { data } = result;
             this.otpResult = data.message === 'otp_verified' && data.type === 'success';
@@ -35,4 +35,4 @@ class Message99Service {
     
 }
 
-module.exports = Message99Service;
+module.exports = Message91Service;

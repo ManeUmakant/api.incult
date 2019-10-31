@@ -22,12 +22,19 @@ class Message91Service {
 
         try{
             const { message91Service } = config;
+            console.log(message91Service);
+            
             const url = `${message91Service.serviceUrl}/otp/verify?otp=${this.otp}&mobile=${this.number}&authkey=${message91Service.authKey}`;
+            console.log('ee');
             let result = await axios.post(url);
             const { data } = result;
+            console.log(data);
             this.otpResult = data.message === 'otp_verified' && data.type === 'success';
+            if(!this.otpResult) this.error = data.message;
+            console.log(this.error);
         }
         catch(e){
+            console.log(e);
             this.error = new Error(e).stack;
             this.otpResult = false;
         }

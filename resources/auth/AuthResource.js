@@ -5,7 +5,8 @@ const Auth = require('./Auth');
 
 
 const auth = new Auth();
-AuthRouter.post('/createProfile', auth.createProfile)
+AuthRouter
+.get('/healthCheck', auth.healtchCheck)
 .get('/generateOtp', auth.generateOtp)
 .get('/verifyOtp', auth.verifyOtp);
 

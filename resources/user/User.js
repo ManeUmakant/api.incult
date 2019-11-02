@@ -2,10 +2,9 @@
 const fs = require('fs');
 const multer = require('multer');
 const UserModel = require('../../models/UserModel');
-
 class User {
 
-    createUserProfile(req, res){
+    uploadProfilePhoto(req, res){
 
         const userId = req.params.id;
         
@@ -57,14 +56,38 @@ class User {
 
         });
     }
-    getUserProfile(req, res){
 
+    createProfile(req, res){
+
+        let profileBody = {};
+        const { id } = req.params;
+        const { user_name, user_email } = req.body;
+        profileBody.userId = id;
+        profileBody.userName = user_name;
+        profileBody.userEmail = user_email;
+        UserModel.findUserById(id, (err, rows)=>{
+            if(err) throw err;
+            if(rows.length === 0) return  res.status(404).send();
+            UserModel.updateUserProfile(profileBody, (err)=>{
+                if(err) throw err;
+                rows[0].user_name = user_name;
+                rows[0].user_email = user_email;
+                res.status(200).send({
+                    success:true,
+                    profile:rows[0]
+                });
+            });    
+        });    
+
+    }
+
+    getUserProfile(req, res){
         UserModel.findUserById(req.params.id, (err, rows)=>{
             if(err) res.status(500).send({success:false, error: new Error(err).stack});
             else {
                 res.status(200).send({
                     success:true,
-                    profile:rows[0]
+                    profile:rows
                 });
             }
         });    

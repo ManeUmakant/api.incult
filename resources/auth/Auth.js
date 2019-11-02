@@ -45,6 +45,7 @@ class Auth{
                         let obj = {};
                         obj.number = number;
                         UserModel.createUser(obj, (err, rows)=>{
+                            if(err) throw err;
                             let userObj = {};
                                 userObj.success = true;
                                 userObj.userId = rows.insertId;

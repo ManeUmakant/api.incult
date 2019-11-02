@@ -26,12 +26,15 @@ UserModel.createUser = (obj,done) =>{
 }
 
 UserModel.updateUserAvatar = (obj,done) =>{
-
     const conn = db.getInstance();
     let query = `UPDATE users SET user_avatar = '${obj.avatarPath}' WHERE user_id = ${obj.userId}`;
     conn.query(query, done);
-
 }
 
+UserModel.updateUserProfile = (obj, cb) => {
+    const conn = db.getInstance();
+    let query = `UPDATE users SET user_name = '${obj.userName}', user_email='${obj.userEmail}'  WHERE user_id = ${obj.userId}`;
+    conn.query(query, cb);
+}
 
 module.exports = UserModel;

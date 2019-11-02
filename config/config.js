@@ -2,8 +2,8 @@
 
 module.exports = {
     message91Service:{
-        serviceUrl:'https://api.msg91.com/api/v5',
-        authKey:'291956AVlhClol5d69f8b0',
+        serviceUrl:'xxxx',
+        authKey:'xxx',
         sender:'Incult'
     },
     db:{

@@ -4,16 +4,12 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 8081;
-const AuthRouter = require('./resources/auth/AuthResource');
-const UserRouter = require('./resources/user/UserResource');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + '/uploads'));
 
-
-app.use('', AuthRouter);
-app.use('', UserRouter);
+app.use('', require('./resources/index'));
 
 /** PAGE NOT FOUND
  * 404 response config

@@ -19,7 +19,7 @@ class Contact {
                         return user;
                     });
                     res.status(200).send({
-                        validContactList
+                        validContactList:rows
                     })
 
                 }else {

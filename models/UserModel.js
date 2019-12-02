@@ -7,10 +7,15 @@ const db = require('../config/db');
 const BASE_URL = __dirname;
 
  UserModel.findUserById = (userId,done) =>{
- 
     const conn = db.getInstance();
     conn.query(`select * from users where user_id=?`,[userId], done);
 }
+
+UserModel.findUserByIds = (userIds, done) => {
+    const conn = db.getInstance();
+    const query = `select * from users where user_id in ('${userIds}') `; 
+    conn.query(query, done);
+};
 
 UserModel.findUserByPhone = (number, done) =>{
     const conn = db.getInstance();

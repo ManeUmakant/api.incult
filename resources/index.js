@@ -11,6 +11,7 @@ var router = express.Router();
 
 router.use('', require('./auth/AuthResource'));
 router.use('', require('./user/UserResource'));
-router.use('', require('./contacts/ContactResource'))
+router.use('', require('./contacts/ContactResource'));
+router.use('', require('./group/GroupResource'));
 
 module.exports = router;

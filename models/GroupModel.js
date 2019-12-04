@@ -29,5 +29,30 @@ GroupModel.findGroupById = (groupId, done) => {
     return conn.query(query, done);
 }
 
+GroupModel.deleteGroupById = (groupId) => {
+    const query = `delete from chat_group where grp_id='${groupId}' `;
+    const removeGroupMemberAssoc = `delete from chat_group_user_assoc where grp_id='${groupId}'`;
+    const conn = db.getInstance();
+    conn.query(query);
+    conn.query(removeGroupMemberAssoc);
+}
+
+GroupModel.updateGroupInfo = (groupId,payload, done) =>  {
+    
+    const { grp_name, grp_icon } = payload;
+    const query = `UPDATE chat_group SET grp_name='${grp_name}',
+    grp_icon = '${grp_icon}'
+     WHERE grp_id = ${groupId}`;
+     const conn = db.getInstance();
+     conn.query(query, done);
+}
+
+GroupModel.findUsersByGroupId = (groupId, done) => {
+
+    const query = `SELECT user_id FROM chat_group_user_assoc WHERE grp_id=${groupId}`;
+    const conn = db.getInstance();
+     conn.query(query, done);
+
+}
 
 module.exports = GroupModel;

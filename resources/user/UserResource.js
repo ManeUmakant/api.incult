@@ -9,6 +9,7 @@ const user = new User();
 UserRouter
 .post('/uploadProfilePhoto/:id', TokenMiddleware.checkToken, user.uploadProfilePhoto)
 .post('/createProfile/:id', TokenMiddleware.checkToken, userValidationRules(),validate,user.createProfile)
+.put('/updateProfile/:id', TokenMiddleware.checkToken, userValidationRules(),validate,user.createProfile)
 .get('/getUserProfile/:id', TokenMiddleware.checkToken, user.getUserProfile);
 
 

@@ -49,7 +49,7 @@ GroupModel.updateGroupInfo = (groupId,payload, done) =>  {
 
 GroupModel.findUsersByGroupId = (groupId, done) => {
 
-    const query = `SELECT user_id FROM chat_group_user_assoc WHERE grp_id=${groupId}`;
+    const query = `SELECT user_id, is_admin_user FROM chat_group_user_assoc WHERE grp_id=${groupId}`;
     const conn = db.getInstance();
      conn.query(query, done);
 

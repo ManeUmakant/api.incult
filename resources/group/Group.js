@@ -19,10 +19,11 @@ class Contact {
                 const grpId = result.insertId; 
                 GroupModel.findGroupById(grpId, (err, result4)=>{
                    
-                    let { groupMembers } = body;
+                    let { groupMembers,adminId } = body;
                     groupMembers = groupMembers.join("','");
                     UserModel.findUserByIds(groupMembers, (err, rows)=>{
                         const createdGroupResponse = result4[0];
+                        createdGroupResponse.adminId = adminId;
                         createdGroupResponse.groupMembers = rows;
                         res.send({
                             success:true,
@@ -46,10 +47,15 @@ class Contact {
                         if(err) throw err;
                         else {
                             if(users.length > 0) {
-                                UserModel.findUserByIds(users.map(row=>{
+                                const userIds = users.map(row=>{
                                     return row.user_id;
-                                }).join("','"), (err, rows)=>{
+                                }).join("','");
+                                const adminId = users.filter(row=>{
+                                    return row.is_admin_user == 1;
+                                });
+                                UserModel.findUserByIds(userIds, (err, rows)=>{
                                     const createdGroupResponse = result4[0];
+                                    createdGroupResponse.adminId = adminId[0].user_id;
                                     createdGroupResponse.groupMembers = rows;
                                     res.status(200);
                                     res.send({

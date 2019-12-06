@@ -16,7 +16,7 @@ class User {
             , path = __dirname + "/../../" + uploadPath
             , fileName = "";
 
-            if (!fs.existsSync(path)) fs.mkdirSync(path)   
+            if (!fs.existsSync(path)) fs.mkdirSync(path);   
             else {
                 let files = fs.readdirSync(path);
                 for(let file of files) fs.unlinkSync(`${path}/${file}`);

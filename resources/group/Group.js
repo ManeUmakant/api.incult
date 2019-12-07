@@ -2,12 +2,26 @@
 
 const GroupModel = require('../../models/GroupModel');
 const UserModel = require('../../models/UserModel');
-
+const GroupUtil = require('../../util/GroupUtil');
+const fs = require('fs');
 class Contact {
 
     createGroup(req, res) {
     
         const { body } = req;
+        const { grp_icon,adminId,grp_name } = body;
+        if(grp_icon !== '') {
+            const fileName = `${Date.now()}.png`;
+            var uploadPath = `uploads/group_dps/${adminId}_${grp_name}`
+            , path = `${__dirname}/../../${uploadPath}/${fileName}`;
+            if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath);
+            else {
+                let files = fs.readdirSync(uploadPath);
+                for(let file of files) fs.unlinkSync(`${uploadPath}/${file}`);
+            } 
+            GroupUtil.uploadBase64Image(path,grp_icon);
+            body.grp_icon = uploadPath + '/' + fileName; 
+        }
          GroupModel.createGroup(body, (err, result) => {
             if(err) throw err;
             GroupModel.groupMembersAssoc(

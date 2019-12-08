@@ -5,7 +5,11 @@ const app = express();
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 8081;
 const fs = require('fs');
+const fileUpload = require('express-fileupload');
 
+app.use(fileUpload({
+    createParentPath: true
+}));
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit: 50000 }));
 app.use(express.static(__dirname + '/uploads'));

@@ -4,36 +4,38 @@ const GroupModel = require('../../models/GroupModel');
 const UserModel = require('../../models/UserModel');
 const GroupUtil = require('../../util/GroupUtil');
 const fs = require('fs');
+const FileUploader = require('../../util/FileUploader');
 class Contact {
 
     createGroup(req, res) {
-    
-        const { body } = req;
-        const { grp_icon,adminId,grp_name } = body;
-        if(grp_icon !== '') {
-            const fileName = `${Date.now()}.png`;
-            var uploadPath = `uploads/group_dps/${adminId}_${grp_name}`
-            , path = `${__dirname}/../../${uploadPath}/${fileName}`;
-            if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath);
+
+        const { body } = req;  
+        const { adminId,grp_name } = body;
+        if(req.files) {
+            var uploadPath = `uploads/group_dps/${adminId}_${grp_name}`;
+            if (!fs.existsSync(uploadPath)) { console.log('ss'); fs.mkdirSync(uploadPath);}
             else {
                 let files = fs.readdirSync(uploadPath);
                 for(let file of files) fs.unlinkSync(`${uploadPath}/${file}`);
-            } 
-            GroupUtil.uploadBase64Image(path,grp_icon);
-            body.grp_icon = uploadPath + '/' + fileName; 
+            }
+            const fileObj = req.files.grp_icon;
+            FileUploader.uploadFile(uploadPath, fileObj);
+            body.grp_icon = uploadPath + '/' + fileObj.name; 
         }
          GroupModel.createGroup(body, (err, result) => {
             if(err) throw err;
+            let { groupMembers } = body;
+            groupMembers = JSON.parse(groupMembers);
             GroupModel.groupMembersAssoc(
                 body.adminId,
                 result.insertId,
-                body.groupMembers,
+                groupMembers,
                 (err, result3) => {
                 if(err) throw err;
                 const grpId = result.insertId; 
                 GroupModel.findGroupById(grpId, (err, result4)=>{
                    
-                    let { groupMembers,adminId } = body;
+                    let { adminId } = body;
                     groupMembers = groupMembers.join("','");
                     UserModel.findUserByIds(groupMembers, (err, rows)=>{
                         const createdGroupResponse = result4[0];

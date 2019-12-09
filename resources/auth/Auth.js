@@ -31,36 +31,30 @@ class Auth{
     async verifyOtp(req, res){
 
         const {number, otp } = req.headers;
-      /*   let token = Auth.generateToken(number);
-        res.send(token); */
         if(number && otp) {
             let msessage91Service = new Message91Service();
             msessage91Service.number = number;
             msessage91Service.otp = otp;
             await msessage91Service.validateOtp();
             if(msessage91Service.otpResult) {
-                UserModel.findUserByPhone(number,(err, rows)=>{
-                    if(err) throw err;        
-                    if(rows.length === 0) {
-                        let obj = {};
-                        obj.number = number;
-                        UserModel.createUser(obj, (err, rows)=>{
-                            if(err) throw err;
-                            let userObj = {};
-                                userObj.success = true;
-                                userObj.userId = rows.insertId;
-                                userObj.token = Auth.generateToken(number);
-                            res.status(HttpStatus.OK).send(userObj);
-                        });
-                    }
-                    else {
-                        let userObj = {};
-                        userObj.success = true;
-                        userObj.userId = rows[0].user_id;
-                        userObj.token = Auth.generateToken(number);
-                        res.status(HttpStatus.OK).send(userObj);
-                    }    
-                });
+                let rows = await UserModel.findUserByPhone(number);
+                if(rows.length === 0) {
+                    let obj = {};
+                    obj.number = number;
+                    let createdRow = await UserModel.createUser(obj);
+                    let userObj = {};
+                    userObj.success = true;
+                    userObj.userId = createdRow.insertId;
+                    userObj.token = Auth.generateToken(number);
+                    res.status(HttpStatus.OK).send(userObj);
+                }
+                else {
+                    let userObj = {};
+                    userObj.success = true;
+                    userObj.userId = rows[0].user_id;
+                    userObj.token = Auth.generateToken(number);
+                    res.status(HttpStatus.OK).send(userObj);
+                }    
             }
             else res.status(HttpStatus.NOT_FOUND).send({success:false, message:msessage91Service.error});    
         }

@@ -7,10 +7,10 @@ const { userValidationRules, validate } = require('./validators');
 
 const user = new User();
 UserRouter
-.post('/uploadProfilePhoto/:id', TokenMiddleware.checkToken, user.uploadProfilePhoto)
-.post('/createProfile/:id', TokenMiddleware.checkToken, userValidationRules(),validate,user.createProfile)
+.post('/uploadProfilePhoto/:id',  user.uploadProfilePhoto)
+.post('/createProfile/:id', userValidationRules(),validate,user.createProfile)
 .put('/updateProfile/:id', TokenMiddleware.checkToken, userValidationRules(),validate,user.createProfile)
-.get('/getUserProfile/:id', TokenMiddleware.checkToken, user.getUserProfile);
+.get('/getUserProfile/:id', user.getUserProfile);
 
 
 module.exports = UserRouter;

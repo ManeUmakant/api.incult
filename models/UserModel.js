@@ -1,46 +1,52 @@
 "use strict";
-
 const UserModel = {};
-const db = require('../config/db');
+const QueueExecutor = require('../util/QueryExecutor');
 
-
-const BASE_URL = __dirname;
-
- UserModel.findUserById = (userId,done) =>{
-    const conn = db.getInstance();
-    conn.query(`select * from users where user_id=?`,[userId], done);
+ UserModel.findUserById = async (userId) =>{
+    try {
+        const result = await QueueExecutor.execute(`select * from users where user_id=${userId}`);
+        return result;
+    }catch(e) {
+        throw e;
+    }   
 }
 
-UserModel.findUserByIds = (userIds, done) => {
-    const conn = db.getInstance();
+UserModel.findUserByIds = async (userIds) => {
     const query = `select * from users where user_id in ('${userIds}') `; 
-    console.log('query', query);
-    conn.query(query, done);
+    const result = QueueExecutor.execute(query);
+    return result;  
 };
 
-UserModel.findUserByPhone = (number, done) =>{
-    const conn = db.getInstance();
-    conn.query(`select * from users where user_phone=?`,[number], done);
+UserModel.findUserByPhone = async (number) =>{
+
+    const query = `select * from users where user_phone=${number}`;
+    const result = await QueueExecutor.execute(query);
+    return result;
 }
 
-UserModel.createUser = (obj,done) =>{
-    const conn = db.getInstance();
+UserModel.createUser = async (obj) =>{
+
     if(!obj.number) obj.number = 'NULL';
     if(!obj.userName) obj.userName = 'NULL';
     if(!obj.userEmail) obj.userEmail = 'NULL';
-    conn.query(`INSERT INTO users (user_name, user_email, user_phone) VALUES (${obj.userName}, ${obj.userEmail}, ${obj.number})`, done);
+    const query = `INSERT INTO users (user_name, user_email, user_phone) VALUES (${obj.userName}, ${obj.userEmail}, ${obj.number})`;
+    const result = await QueueExecutor.execute(query);
+    return result;
 }
 
-UserModel.updateUserAvatar = (obj,done) =>{
-    const conn = db.getInstance();
+UserModel.updateUserAvatar = async (obj) =>{
     let query = `UPDATE users SET user_avatar = '${obj.avatarPath}' WHERE user_id = ${obj.userId}`;
-    conn.query(query, done);
+    await QueueExecutor.execute(query);
 }
 
-UserModel.updateUserProfile = (obj, cb) => {
-    const conn = db.getInstance();
-    let query = `UPDATE users SET user_name = '${obj.userName}', user_email='${obj.userEmail}'  WHERE user_id = ${obj.userId}`;
-    conn.query(query, cb);
+UserModel.updateUserProfile =   async (obj) => {
+     let query = `UPDATE users SET user_name = '${obj.userName}', user_email='${obj.userEmail}'  WHERE user_id = ${obj.userId}`;
+    try {
+        const result = await QueueExecutor.execute(query);
+        return result;
+    }catch(e) {
+        throw e;
+    }
 }
 
 module.exports = UserModel;

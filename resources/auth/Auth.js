@@ -39,18 +39,22 @@ class Auth{
             msessage91Service.otp = otp;
             await msessage91Service.validateOtp();
             if(msessage91Service.otpResult) {
-                UserModel.findUserByPhone(number,(err, rows)=>{
-                    if(err) throw err;        
+                UserModel.findUserByPhone(number,(err1, rows)=>{
+                    if(err1) throw err1;        
                     if(rows.length === 0) {
                         let obj = {};
                         obj.number = number;
-                        UserModel.createUser(obj, (err, rows)=>{
-                            if(err) throw err;
-                            let userObj = {};
+                        UserModel.createUser(obj, (err2, rows)=>{
+                            if(err2) throw err2;
+                            UserModel.findUserById(rows.insertId, (err3, user)=>{
+                                if(err3) throw err3;
+                                let userObj = {};
                                 userObj.success = true;
                                 userObj.userId = rows.insertId;
                                 userObj.token = Auth.generateToken(number);
-                            res.status(HttpStatus.OK).send(userObj);
+                                userObj.profile = user[0];
+                                res.status(HttpStatus.OK).send(userObj);
+                            }); 
                         });
                     }
                     else {
@@ -58,6 +62,7 @@ class Auth{
                         userObj.success = true;
                         userObj.userId = rows[0].user_id;
                         userObj.token = Auth.generateToken(number);
+                        userObj.profile = rows[0];
                         res.status(HttpStatus.OK).send(userObj);
                     }    
                 });

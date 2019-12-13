@@ -21,6 +21,8 @@ app.use('', require('./resources/index'));
 */
 
 app.use((request, response, next)=> {
+    if(request.url.endsWith('.png') || request.url.endsWith('.jpg') || request.url.endsWith('.jpeg'))
+        return response.status(404).send({ user_avatar:''}); 
     return response.status(404).send({ message: `Route ${request.url} Not found.` });
 });
 

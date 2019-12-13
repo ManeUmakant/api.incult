@@ -2,7 +2,7 @@ const db = require('../config/db');
 const util = require('util');
 const conn = db.getInstance();
 
-class QueueExecutor{
+class QueryExecutor{
 
     static async execute(sqlQuery) {
         try {
@@ -16,4 +16,4 @@ class QueueExecutor{
     
 }
 
-module.exports = QueueExecutor;
+module.exports = QueryExecutor;

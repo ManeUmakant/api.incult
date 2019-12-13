@@ -2,8 +2,8 @@
 
 module.exports = {
     message91Service:{
-        serviceUrl:'xxxx',
-        authKey:'xxx',
+        serviceUrl:'https://api.msg91.com/api/v5',
+        authKey:'291956AVlhClol5d69f8b0',
         sender:'Incult'
     },
     db:{
@@ -14,6 +14,7 @@ module.exports = {
         PORT:3306
     },
     auth:{
-        jwdSecret:'worldisfullofdevelopers'
+        jwdSecret:'worldisfullofdevelopers',
+        tokenExpiry:'24h'
     }
 };

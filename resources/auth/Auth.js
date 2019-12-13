@@ -3,8 +3,7 @@
 const HttpStatus = require('http-status-codes');
 const Message91Service = require('../../services/Message91Service');
 const UserModel = require('../../models/UserModel');
-let jwt = require('jsonwebtoken');
-const config = require('../../config/config');
+const TokenMiddleware = require('../../util/TokenMiddleware');
 class Auth{
 
    healtchCheck(req, res) {
@@ -13,7 +12,7 @@ class Auth{
             message:"Running..."
         });
    } 
-    
+
    async generateOtp(req, res){
 
         let number = req.headers.number;
@@ -21,7 +20,7 @@ class Auth{
             let msessage91Service = new Message91Service();
             msessage91Service.number = number;
             await msessage91Service.sendOtp();
-            if(msessage91Service.otpResult) 
+            if(msessage91Service.otpResult)
                 res.status(HttpStatus.OK).send({success:true, message:`Otp has been sent to ${number}`});
             else res.status(HttpStatus.SERVICE_UNAVAILABLE).send({success:false, message:'error'});    
         }
@@ -38,33 +37,27 @@ class Auth{
             await msessage91Service.validateOtp();
             if(msessage91Service.otpResult) {
                 let rows = await UserModel.findUserByPhone(number);
+                let userObj = {};
+                userObj.success = true;
                 if(rows.length === 0) {
-                    let obj = {};
-                    obj.number = number;
-                    let createdRow = await UserModel.createUser(obj);
-                    let userObj = {};
-                    userObj.success = true;
-                    userObj.userId = createdRow.insertId;
-                    userObj.token = Auth.generateToken(number);
-                    res.status(HttpStatus.OK).send(userObj);
+                    let createdRow = await UserModel.createUser({number});
+                    let userId = createdRow.insertId;
+                    let userProfile = await UserModel.findUserById(userId);
+                    userObj.userId = userId;
+                    userObj.token = TokenMiddleware.generateToken(number);
+                    userObj.profile = userProfile[0];
                 }
                 else {
-                    let userObj = {};
-                    userObj.success = true;
                     userObj.userId = rows[0].user_id;
-                    userObj.token = Auth.generateToken(number);
-                    res.status(HttpStatus.OK).send(userObj);
-                }    
+                    userObj.token = TokenMiddleware.generateToken(number);
+                    userObj.profile = rows[0]
+                }
+                res.status(HttpStatus.OK).send(userObj);
             }
             else res.status(HttpStatus.NOT_FOUND).send({success:false, message:msessage91Service.error});    
         }
         else res.status(HttpStatus.BAD_REQUEST).send({});
     }
-
-    static generateToken(number) {
-        return jwt.sign({number: number}, config.auth.jwdSecret,{ expiresIn: '24h'});             
-    }
-
 }
 
 module.exports = Auth;

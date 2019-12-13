@@ -7,8 +7,8 @@ const FileUploader = require('../../util/FileUploader');
 const CommonUtil = require('../../util/CommonUtil');
 class Contact {
     
-    static groupImageUpload(req,adminId,grp_name) {
-        var uploadPath = `uploads/group_dps/${adminId}_${grp_name}`;
+    static groupImageUpload(req,groupId) {
+        var uploadPath = `uploads/group_dps/${groupId}`;
         if (!fs.existsSync(uploadPath))  fs.mkdirSync(uploadPath);
         else CommonUtil.removeFilesFromDir(uploadPath);
         const fileObj = req.files.grp_icon;
@@ -18,21 +18,24 @@ class Contact {
 
     async createGroup(req, res) {
 
-        const { body } = req;  
-        const { adminId,grp_name } = body;
-        if(req.files) body.grp_icon = Contact.groupImageUpload(req, adminId,grp_name);
         try {
+            const { body } = req;  
+            const { adminId } = body;
+            body.grp_icon = '';
             const result = await GroupModel.createGroup(body);
+            const grpId = result.insertId; 
+            if(req.files) { 
+                body.grp_icon = Contact.groupImageUpload(req,grpId);
+                await GroupModel.updateGroupInfo(grpId,body);
+            }    
             let { groupMembers } = body;
             groupMembers = JSON.parse(groupMembers);
             await GroupModel.groupMembersAssoc(
-                body.adminId,
-                result.insertId,
+                adminId,
+                grpId,
                 groupMembers
             );
-            const grpId = result.insertId; 
             const result4 = await GroupModel.findGroupById(grpId);
-            let { adminId } = body;
             groupMembers = groupMembers.join("','");
             const rows = await UserModel.findUserByIds(groupMembers);
             const createdGroupResponse = result4[0];
@@ -52,8 +55,8 @@ class Contact {
         
         const { body, params } = req;
         const groupId = params.id;
-        const { adminId,grp_name } = body;
-        if(req.files) body.grp_icon = Contact.groupImageUpload(req, adminId,grp_name);
+        const { grp_name } = body;
+        if(req.files) body.grp_icon = Contact.groupImageUpload(req, groupId,grp_name);
         try {
             await GroupModel.updateGroupInfo(groupId,body);
             const result4 = await GroupModel.findGroupById(groupId);

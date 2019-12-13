@@ -1,12 +1,12 @@
 "use strict";
 
 const ContactModel = {};
-const db = require('../config/db');
+const QueryExeccutor = require('../util/QueryExecutor');
 
-ContactModel.findContactsByPhoneNumbers = function(contactList, done) {
-    const conn = db.getInstance();
+ContactModel.findContactsByPhoneNumbers = async function(contactList) {
     const query = `select * from users where user_phone in ('${contactList}') `; 
-    conn.query(query, done);
+    const result = await QueryExeccutor.execute(query);
+    return result;
 }
 
 module.exports = ContactModel;

@@ -2,7 +2,6 @@
 class FileUplaoder {
 
     static uploadFile(path, avatar) {
-
         try {
             const filePath = path + '/' + avatar.name;
             avatar.mv(filePath);
@@ -12,7 +11,6 @@ class FileUplaoder {
             console.log('Exception occured while uploading file');
             return false;
         }
-
     }
 
 }

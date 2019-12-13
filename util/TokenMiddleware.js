@@ -2,11 +2,12 @@
 let jwt = require('jsonwebtoken');
 const config = require('../config/config');
 
-let checkToken = (req, res, next) => {
+class TokenMiddleware {
+
+  static checkToken(req, res, next) {
 
     let token = req.headers['x-access-token'] || req.headers['authorization'];
     if (token && token.startsWith('Bearer ')) token = token.slice(7, token.length);
-  
     if (token) {
       jwt.verify(token, config.auth.jwdSecret, (err, decoded) => {
         if (err) {
@@ -25,8 +26,12 @@ let checkToken = (req, res, next) => {
         message: 'Auth token is not supplied'
       });
     }
-  };
-  
-  module.exports = {
-    checkToken: checkToken
-  };
+  }
+
+  static generateToken(number) {
+    return jwt.sign({number: number}, config.auth.jwdSecret,{ expiresIn: config.auth.tokenExpiry});             
+  }
+
+}
+
+module.exports = TokenMiddleware;

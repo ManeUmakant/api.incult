@@ -39,7 +39,6 @@ class Auth{
             msessage91Service.number = number;
             msessage91Service.otp = otp;
             await msessage91Service.validateOtp();
-            console.log('msessage91Service', msessage91Service);
             if(msessage91Service.otpResult) {
                 UserModel.findUserByPhone(number,(err1, rows)=>{
                     if(err1) throw err1;        

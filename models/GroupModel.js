@@ -8,8 +8,6 @@ const db = require('../config/db');
     const { grp_name, grp_desc, grp_icon } = groupObj;
     const query = `INSERT INTO chat_group (grp_id, grp_name, grp_desc, grp_icon) 
     VALUES (NULL, '${grp_name}', '${grp_desc}', '${grp_icon}' )`;
-
-    console.log("query", query);
     conn.query(query, done);
 }
 

@@ -5,27 +5,30 @@ const UserModel = require('../../models/UserModel');
 const GroupUtil = require('../../util/GroupUtil');
 const fs = require('fs');
 const FileUploader = require('../../util/FileUploader');
+const HttpStatus = require('http-status-codes');
+
+
 class Contact {
 
     createGroup(req, res) {
 
-        const { body } = req;  
-        const { adminId,grp_name } = body;
-        if(req.files) {
-            var uploadPath = `uploads/group_dps/${adminId}_${grp_name}`;
-            if (!fs.existsSync(uploadPath)) { console.log('ss'); fs.mkdirSync(uploadPath);}
-            else {
-                let files = fs.readdirSync(uploadPath);
-                for(let file of files) fs.unlinkSync(`${uploadPath}/${file}`);
-            }
-            const fileObj = req.files.grp_icon;
-            FileUploader.uploadFile(uploadPath, fileObj);
-            body.grp_icon = uploadPath + '/' + fileObj.name; 
-        }
+        const { body } = req;
+        // const { adminId,grp_name } = body;
+        // if(req.files) {
+        //     var uploadPath = `uploads/group_dps/${adminId}_${grp_name}`;
+        //     if (!fs.existsSync(uploadPath)) { console.log('ss'); fs.mkdirSync(uploadPath);}
+        //     else {
+        //         let files = fs.readdirSync(uploadPath);
+        //         for(let file of files) fs.unlinkSync(`${uploadPath}/${file}`);
+        //     }
+        //     const fileObj = req.files.grp_icon;
+        //     FileUploader.uploadFile(uploadPath, fileObj);
+        //     body.grp_icon = uploadPath + '/' + fileObj.name;
+        // }
          GroupModel.createGroup(body, (err, result) => {
             if(err) throw err;
             let { groupMembers } = body;
-            groupMembers = JSON.parse(groupMembers);
+            groupMembers = groupMembers;
             GroupModel.groupMembersAssoc(
                 body.adminId,
                 result.insertId,
@@ -85,6 +88,35 @@ class Contact {
                 });
             }
         });
+    }
+
+    uploadGroupIcon(req, res) {
+
+        const grpId = req.params.id;
+         if(req.files && grpId) {
+             var uploadPath = `uploads/group_dps/${grpId}`;
+             if (!fs.existsSync(uploadPath)) {
+                 console.log('ss');
+                 fs.mkdirSync(uploadPath);
+             }
+             else {
+                 let files = fs.readdirSync(uploadPath);
+                 for (let file of files) fs.unlinkSync(`${uploadPath}/${file}`);
+             }
+             const fileObj = req.files.grp_icon;
+             FileUploader.uploadFile(uploadPath, fileObj);
+             const grp_icon = uploadPath + '/' + fileObj.name;
+             GroupModel.updateGroupIcon(grp_icon, grpId);
+             res.status(HttpStatus.ACCEPTED).send({
+                     grp_icon
+             });
+         }
+         else {
+             res.status(HttpStatus.BAD_REQUEST).send({
+                 message:"Bad Request"
+             })
+         }
+
     }
 
     deleteGroup(req, res){

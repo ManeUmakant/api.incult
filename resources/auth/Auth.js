@@ -21,6 +21,7 @@ class Auth{
             let msessage91Service = new Message91Service();
             msessage91Service.number = number;
             await msessage91Service.sendOtp();
+
             if(msessage91Service.otpResult) 
                 res.status(HttpStatus.OK).send({success:true, message:`Otp has been sent to ${number}`});
             else res.status(HttpStatus.SERVICE_UNAVAILABLE).send({success:false, message:'error'});    
@@ -38,6 +39,7 @@ class Auth{
             msessage91Service.number = number;
             msessage91Service.otp = otp;
             await msessage91Service.validateOtp();
+            console.log('msessage91Service', msessage91Service);
             if(msessage91Service.otpResult) {
                 UserModel.findUserByPhone(number,(err1, rows)=>{
                     if(err1) throw err1;        

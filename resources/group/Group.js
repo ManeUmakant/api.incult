@@ -107,8 +107,9 @@ class Contact {
              FileUploader.uploadFile(uploadPath, fileObj);
              const grp_icon = uploadPath + '/' + fileObj.name;
              GroupModel.updateGroupIcon(grp_icon, grpId);
-             res.status(HttpStatus.ACCEPTED).send({
-                     grp_icon
+             res.status(HttpStatus.OK).send({
+                     success:true,
+                     message:"Group icon uploaded"
              });
          }
          else {

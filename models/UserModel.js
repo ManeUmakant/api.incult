@@ -13,8 +13,7 @@ const BASE_URL = __dirname;
 
 UserModel.findUserByIds = (userIds, done) => {
     const conn = db.getInstance();
-    const query = `select * from users where user_id in ('${userIds}') `; 
-    console.log('query', query);
+    const query = `select * from users where user_id in ('${userIds}') `;
     conn.query(query, done);
 };
 

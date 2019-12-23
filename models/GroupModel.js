@@ -47,6 +47,15 @@ GroupModel.updateGroupInfo = (groupId,payload, done) =>  {
      conn.query(query, done);
 }
 
+GroupModel.updateGroupIcon = (grpIconPath, groupId) => {
+
+     const query = `UPDATE chat_group SET grp_icon = '${grpIconPath}'
+     WHERE grp_id = ${groupId}`;
+     const conn = db.getInstance();
+     conn.query(query);
+
+}
+
 GroupModel.findUsersByGroupId = (groupId, done) => {
 
     const query = `SELECT user_id, is_admin_user FROM chat_group_user_assoc WHERE grp_id=${groupId}`;

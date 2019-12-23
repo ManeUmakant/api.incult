@@ -25,7 +25,7 @@ class Message91Service {
             const url = `${message91Service.serviceUrl}/otp/verify?otp=${this.otp}&mobile=${this.number}&authkey=${message91Service.authKey}`;
             let result = await axios.post(url);
             const { data } = result;
-            this.otpResult = data.message === 'otp_verified' && data.type === 'success';
+            this.otpResult = data.message === 'OTP verified success' && data.type === 'success';
             if(!this.otpResult) this.error = data.message;
         }
         catch(e){

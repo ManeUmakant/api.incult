@@ -21,6 +21,7 @@ class Auth{
             let msessage91Service = new Message91Service();
             msessage91Service.number = number;
             await msessage91Service.sendOtp();
+
             if(msessage91Service.otpResult) 
                 res.status(HttpStatus.OK).send({success:true, message:`Otp has been sent to ${number}`});
             else res.status(HttpStatus.SERVICE_UNAVAILABLE).send({success:false, message:'error'});    

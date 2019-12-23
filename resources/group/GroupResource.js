@@ -4,7 +4,7 @@ const TokenMiddleware = require('../../util/TokenMiddleware');
 
 let group = new Group();
 GroupRouter.post('/createGroup', TokenMiddleware.checkToken, group.createGroup)
-    .put('/uploadGroupIcon/:id', group.uploadGroupIcon)
+    .put('/uploadGroupIcon/:id', TokenMiddleware.checkToken, group.uploadGroupIcon)
 .put('/updateGroup/:id', TokenMiddleware.checkToken, group.updateGroup)
 .delete('/deleteGroup/:id', TokenMiddleware.checkToken, group.deleteGroup);
 

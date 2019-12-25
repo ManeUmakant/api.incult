@@ -92,7 +92,7 @@ class Contact {
 
     uploadGroupIcon(req, res) {
 
-        const grpId = req.params.id;
+         const grpId = req.params.id;
          if(req.files && grpId) {
              var uploadPath = `uploads/group_dps/${grpId}`;
              if (!fs.existsSync(uploadPath)) {

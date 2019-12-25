@@ -24,7 +24,7 @@ class Auth{
 
             if(msessage91Service.otpResult) 
                 res.status(HttpStatus.OK).send({success:true, message:`Otp has been sent to ${number}`});
-            else res.status(HttpStatus.SERVICE_UNAVAILABLE).send({success:false, message:'error'});    
+            else res.status(HttpStatus.SERVICE_UNAVAILABLE).send({success:false, message:msessage91Service.error});    
         }
         else res.status(HttpStatus.BAD_REQUEST).send();
     }

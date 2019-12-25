@@ -1,59 +1,47 @@
 "use strict";
 const fs = require('fs');
-const multer = require('multer');
 const UserModel = require('../../models/UserModel');
+const FileUploader = require('../../util/FileUploader');
+
 class User {
 
     uploadProfilePhoto(req, res){
 
         const userId = req.params.id;
-        
-        UserModel.findUserById(userId, (err, rows)=>{
+        UserModel.findUserById(userId, (err, rows)=> {
             if(err) throw err;
-            if(rows.length === 0) return  res.status(404).send();
-             
-            var uploadPath = "uploads/" + userId
-            , path = __dirname + "/../../" + uploadPath
-            , fileName = "";
-
-            if (!fs.existsSync(path)) fs.mkdirSync(path);   
-            else {
-                let files = fs.readdirSync(path);
-                for(let file of files) fs.unlinkSync(`${path}/${file}`);
-            }
-            var Storage = multer.diskStorage({
-                destination: function(req, file, callback) {
-                    callback(null, path);
-                },
-                filename: function(req, file, callback) {
-                    fileName = file.originalname;
-                    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-                        return callback(new Error('Only image files are allowed!'));
-                    }
-                    callback(null, file.originalname);
+            if(rows.length === 0) return  res.status(404).send();    
+            
+            if(req.files) {
+                const fileObj = req.files.user_avatar;
+                const fileName = fileObj.name;
+                if (!fileName.match(/\.(jpg|jpeg|png|gif)$/)) {
+                    return res.status(HttpStatus.BAD_REQUEST).send('Only image files are allowed!');
                 }
-            });
-            var upload = multer({storage: Storage}).any();
-            upload(req,res,function(err) {
-                if(err) {
-                    return res.status(400).send({
-                        success:false,
-                        error:new Error(err).stack
-                    });
-                } 
+                var uploadPath = "uploads/" + userId
+                , path = __dirname + "/../../" + uploadPath
+                if (!fs.existsSync(path)) fs.mkdirSync(path);   
                 else {
-                    let obj = {};
-                    obj.avatarPath = `${uploadPath}/${fileName}`;
-                    obj.userId = userId;
-                    UserModel.updateUserAvatar(obj);
-                    rows[0].user_avatar = obj.avatarPath;
-                    res.status(200).send({
-                        success:true,
-                        profile:rows[0]
-                    });
+                    let files = fs.readdirSync(path);
+                    for(let file of files) fs.unlinkSync(`${path}/${file}`);
                 }
-            });
-
+                FileUploader.uploadFile(uploadPath, fileObj);
+                let obj = {};
+                obj.avatarPath = uploadPath + '/' + fileName;
+                obj.userId = userId;
+                UserModel.updateUserAvatar(obj);
+                rows[0].user_avatar = obj.avatarPath;
+                res.status(200).send({
+                    success:true,
+                    profile:rows[0]
+                });
+            
+            }
+            else {
+                res.status(HttpStatus.BAD_REQUEST).send({
+                    message:"Bad Request"
+                })
+            }   
         });
     }
 

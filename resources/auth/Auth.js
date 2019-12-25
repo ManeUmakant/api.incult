@@ -39,7 +39,7 @@ class Auth{
             msessage91Service.number = number;
             msessage91Service.otp = otp;
             await msessage91Service.validateOtp();
-            if(msessage91Service.otpResult  || true) {
+            if(msessage91Service.otpResult) {
                 UserModel.findUserByPhone(number,(err1, rows)=>{
                     if(err1) throw err1;        
                     if(rows.length === 0) {

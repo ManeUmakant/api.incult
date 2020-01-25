@@ -38,7 +38,7 @@ UserModel.updateUserAvatar = (obj,done) =>{
 
 UserModel.updateUserProfile = (obj, cb) => {
     const conn = db.getInstance();
-    let query = `UPDATE users SET user_name = '${obj.userName}', user_email='${obj.userEmail}'  WHERE user_id = ${obj.userId}`;
+    let query = `UPDATE users SET user_name = '${obj.userName}', user_email='${obj.userEmail}', user_firebase_id='${obj.userFirebaseId}'  WHERE user_id = ${obj.userId}`;
     conn.query(query, cb);
 }
 

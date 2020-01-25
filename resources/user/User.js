@@ -49,10 +49,11 @@ class User {
 
         let profileBody = {};
         const { id } = req.params;
-        const { user_name, user_email } = req.body;
+        const { user_name, user_email,user_firebase_id } = req.body;
         profileBody.userId = id;
         profileBody.userName = user_name;
         profileBody.userEmail = user_email;
+        profileBody.userFirebaseId = user_firebase_id;
         UserModel.findUserById(id, (err, rows)=>{
             if(err) throw err;
             if(rows.length === 0) return  res.status(404).send();
@@ -60,6 +61,7 @@ class User {
                 if(err) throw err;
                 rows[0].user_name = user_name;
                 rows[0].user_email = user_email;
+                rows[0].user_firebase_id = user_firebase_id;
                 res.status(200).send({
                     success:true,
                     profile:rows[0]

@@ -4,8 +4,8 @@ const TokenMiddleware = require('../../util/TokenMiddleware');
 
 let chats = new Chats();
 //TokenMiddleware.checkToken
-ChatsRouter.post('/insertChat', chats.insertChat);
-ChatsRouter.get('/getChatById/:id', chats.getChatById);
-ChatsRouter.get('/getCultMessagesByRoomIdAndUserId/:userId/:roomId', chats.getCultMessagesByRoomIdAndUserId);
+ChatsRouter.post('/insertChat', TokenMiddleware.checkToken, chats.insertChat);
+ChatsRouter.get('/getChatById/:id', TokenMiddleware.checkToken, chats.getChatById);
+ChatsRouter.get('/getCultMessagesByRoomIdAndUserId/:userId/:roomId', TokenMiddleware.checkToken, chats.getCultMessagesByRoomIdAndUserId);
 
 module.exports = ChatsRouter;

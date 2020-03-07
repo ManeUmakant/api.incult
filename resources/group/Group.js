@@ -13,19 +13,7 @@ class Contact {
     createGroup(req, res) {
 
         const { body } = req;
-        // const { adminId,grp_name } = body;
-        // if(req.files) {
-        //     var uploadPath = `uploads/group_dps/${adminId}_${grp_name}`;
-        //     if (!fs.existsSync(uploadPath)) { console.log('ss'); fs.mkdirSync(uploadPath);}
-        //     else {
-        //         let files = fs.readdirSync(uploadPath);
-        //         for(let file of files) fs.unlinkSync(`${uploadPath}/${file}`);
-        //     }
-        //     const fileObj = req.files.grp_icon;
-        //     FileUploader.uploadFile(uploadPath, fileObj);
-        //     body.grp_icon = uploadPath + '/' + fileObj.name;
-        // }
-         GroupModel.createGroup(body, (err, result) => {
+        GroupModel.createGroup(body, (err, result) => {
             if(err) throw err;
             let { groupMembers } = body;
             groupMembers = groupMembers;

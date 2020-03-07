@@ -35,7 +35,6 @@ class User {
                     success:true,
                     profile:rows[0]
                 });
-            
             }
             else {
                 res.status(HttpStatus.BAD_REQUEST).send({

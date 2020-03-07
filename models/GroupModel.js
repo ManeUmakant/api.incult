@@ -6,8 +6,8 @@ const db = require('../config/db');
  GroupModel.createGroup = (groupObj,done) =>{
     const conn = db.getInstance();
     const { grp_name, grp_desc, grp_icon } = groupObj;
-    const query = `INSERT INTO chat_group (grp_id, grp_name, grp_desc, grp_icon) 
-    VALUES (NULL, '${grp_name}', '${grp_desc}', '${grp_icon}' )`;
+    const query = `INSERT INTO chat_group (grp_id, grp_name,roomid, grp_desc, grp_icon) 
+    VALUES (NULL, '${grp_name}','${roomid}','${grp_desc}', '${grp_icon}' )`;
     conn.query(query, done);
 }
 

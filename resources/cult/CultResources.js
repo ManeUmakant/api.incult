@@ -1,10 +1,10 @@
 const CultRouter = require('express').Router();
-const Cult = require('./cult');
+const Cult = require('./Cult');
 const TokenMiddleware = require('../../util/TokenMiddleware');
 
 let cult = new Cult();
 //TokenMiddleware.checkToken
-CultRouter.post('/createCult', cult.createCult);
-CultRouter.get('/getCult/:id', cult.getCult);
+CultRouter.post('/createCult', TokenMiddleware.checkToken, cult.createCult);
+CultRouter.get('/getCult/:id', TokenMiddleware.checkToken, cult.getCult);
 
 module.exports = CultRouter;

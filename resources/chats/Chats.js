@@ -27,7 +27,7 @@ class Cult {
         });
     }
 
-    getCultMessagesByRoomIdAndUserId = (req, res) => {
+    getCultMessagesByRoomIdAndUserId(req, res) {
         ChatsModel.getCultMessagesByRoomIdAndUserId(req.params,(err, result) => {
             if(err) res.status(500).send({success:false, error: new Error(err).stack});
             res.status(200).send({

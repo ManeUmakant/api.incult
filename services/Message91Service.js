@@ -10,6 +10,7 @@ class Message91Service {
             const url = `${message91Service.serviceUrl}/otp?sender=${message91Service.sender}&mobile=${this.number}&authkey=${message91Service.authKey}`;
             let result = await axios.post(url);
             const { data } = result;
+            console.log('data', data);
             this.otpResult = data.type === 'success';
         }
         catch(e){

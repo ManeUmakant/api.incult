@@ -31,7 +31,7 @@ class Auth{
 
     async verifyOtp(req, res){
 
-        const {number, otp } = req.headers;
+        const {number, otp,fcm_token } = req.headers;
       /*   let token = Auth.generateToken(number);
         res.send(token); */
         if(number && otp) {
@@ -45,6 +45,7 @@ class Auth{
                     if(rows.length === 0) {
                         let obj = {};
                         obj.number = number;
+                        obj.fcmToken = fcm_token;
                         UserModel.createUser(obj, (err2, rows)=>{
                             if(err2) throw err2;
                             UserModel.findUserById(rows.insertId, (err3, user)=>{

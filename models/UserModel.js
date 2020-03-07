@@ -27,7 +27,9 @@ UserModel.createUser = (obj,done) =>{
     if(!obj.number) obj.number = 'NULL';
     if(!obj.userName) obj.userName = 'NULL';
     if(!obj.userEmail) obj.userEmail = 'NULL';
-    conn.query(`INSERT INTO users (user_name, user_email, user_phone) VALUES (${obj.userName}, ${obj.userEmail}, ${obj.number})`, done);
+    if(!obj.fcmToken) obj.fcmToken = 'NULL';
+    conn.query(`INSERT INTO users (user_name, user_email, user_phone, fcm_token)
+     VALUES (${obj.userName}, ${obj.userEmail}, ${obj.number}, ${obj.fcmToken})`, done);
 }
 
 UserModel.updateUserAvatar = (obj,done) =>{

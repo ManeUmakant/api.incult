@@ -16,4 +16,10 @@ CultModel.findCultById = (id, done) => {
     conn.query(`select * from cult where cult_id=?`,[id], done);
 }
 
+CultModel.getCultByUserId = (params, done) => {
+    const conn = db.getInstance();
+    conn.query(`SELECT cult_id,cult_name,cult_user_id,cult_desc,cult_image from cult
+    where cult_user_id=?`,[params.userId], done);
+}
+
 module.exports = CultModel;

@@ -19,7 +19,6 @@ class Cult {
     }
 
     getCult(req, res) {
-        
         CultModel.findCultById(req.params.id,(err, result) => {
             if(err) res.status(500).send({success:false, error: new Error(err).stack});
             res.status(200).send({
@@ -28,6 +27,17 @@ class Cult {
             });
         });
     }
+
+    getCultByUserId(req, res) {
+        CultModel.getCultByUserId(req.params,(err, result) => {
+            if(err) res.status(500).send({success:false, error: new Error(err).stack});
+            res.status(200).send({
+               success:true,
+               cult:result
+            });
+        });
+    }
+
 }
 
 module.exports = Cult;

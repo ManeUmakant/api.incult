@@ -28,4 +28,5 @@ ChatModel.getCultMessagesByRoomIdAndUserId = (params, done) => {
     where from_user_id = ? and cult_id = ?;`,[params.userId, params.roomId], done);
 }
 
+
 module.exports = ChatModel;
